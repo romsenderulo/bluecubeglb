@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Blue Cube Viewer</title>
+  <title>GLB Debug Viewer</title>
   <style>
     html, body {
       margin: 0;
@@ -33,27 +33,33 @@
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-    controls.minDistance = 1;
+    controls.minDistance = 0.5;
     controls.maxDistance = 10;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.5));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-    dirLight.position.set(3, 3, 3);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(2, 2, 2);
     scene.add(dirLight);
 
     const loader = new THREE.GLTFLoader();
     loader.load('bluecube.glb', (gltf) => {
       const model = gltf.scene;
 
-      // Recentrer et agrandir
+      // 🔧 Recentrer
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
-      model.scale.set(2, 2, 2);
+
+      model.scale.set(2, 2, 2); // Agrandir un peu pour être sûr
 
       scene.add(model);
+
+      // ✅ Ajout wireframe (debug visuel)
+      const bbox = new THREE.BoxHelper(model, 0xff0000);
+      scene.add(bbox);
+
       console.log("✅ Modèle chargé");
     }, undefined, (err) => {
       console.error("❌ Erreur chargement modèle :", err);
